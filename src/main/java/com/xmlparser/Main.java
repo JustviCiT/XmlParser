@@ -23,10 +23,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.sql.DataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,35 +55,52 @@ public class Main {
 
   @Autowired
   private DataSource dataSource;
+  
+  private static final String XMLURL = "https://www.watchclub.com/merchant/feed.xml";
 
   public static void main(String[] args) throws Exception {
     SpringApplication.run(Main.class, args);
   }
 
   @RequestMapping("/")
-  String index() {
-    return "index";
-  }
-
-  @RequestMapping("/db")
-  String db(Map<String, Object> model) {
-    try (Connection connection = dataSource.getConnection()) {
-      Statement stmt = connection.createStatement();
-      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
-      ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
-
-      ArrayList<String> output = new ArrayList<String>();
-      while (rs.next()) {
-        output.add("Read from DB: " + rs.getTimestamp("tick"));
-      }
-
-      model.put("records", output);
-      return "db";
-    } catch (Exception e) {
-      model.put("message", e.getMessage());
-      return "error";
-    }
+  public ModelAndView mainindex() {
+	URL url;
+	InputStream is = null;
+	try {
+		url = new URL( XMLURL );
+		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+		is = conn.getInputStream();
+	} catch (MalformedURLException e1) {
+		url = null;
+		e1.printStackTrace();
+	} catch (IOException e) {
+		is = null;
+		e.printStackTrace();
+	}
+	  
+	JAXBContext context;
+	Unmarshaller um;
+	Rss myxml;
+	try {
+		context = JAXBContext.newInstance(Rss.class);
+		um = context.createUnmarshaller();
+		myxml = (Rss) um.unmarshal( is );
+	} catch (JAXBException e) {
+		myxml = null;  
+		e.printStackTrace();
+	}
+	Channel ch = myxml.getChannel();
+	ArrayList<Item> items = ch.getItem();
+	
+	ch.setSize(items.size());
+	//System.out.println(items.size());
+	
+	ModelAndView mav = new ModelAndView();
+    mav.setViewName("index");
+    mav.addObject("global", ch);
+    //mav.addObject("records", items);
+     
+    return mav;
   }
 
   @Bean
@@ -84,5 +113,4 @@ public class Main {
       return new HikariDataSource(config);
     }
   }
-
 }

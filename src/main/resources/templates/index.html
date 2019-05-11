@@ -6,31 +6,64 @@
 <div class="jumbotron text-center">
   <div class="container">
     <h1>XML Parser</h1>
-    <a type="button" class="btn btn-lg btn-primary" href=""><span class="glyphicon glyphicon-download"></span>Carica</a>
   </div>
 </div>
 <div class="container">
 
+<div class="card">
+  <div class="card-body"th:text="${global.title}"></div>
+</div>
+<div class="card">
+  <div class="card-body"th:text="${global.link}"></div>
+</div>
+<div class="card">
+  <div class="card-body"th:text="${global.description}"></div>
+</div>
 
- <div class="accordion" id="accordionExample">
+<div class="card">
+  <div class="card-body"th:text="'Totali '+${global.Size}"></div>
+</div>
+
+ <div th:each="record, status : ${global.item}" class="accordion" id="accordion">
   <div class="card">
-    <div class="card-header" id="headingOne">
+    <div class="card-header" th:attr="id='heading'+${status.count}">
       <h2 class="mb-0">
-        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Collapsible Group Item #1
+        <button th:text="${record.id}" class="btn btn-link" type="button" data-toggle="collapse" th:attr="data-target='#collapse'+${status.count}" aria-expanded="false">
         </button>
       </h2>
     </div>
 
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-      <div class="card-body">
-        TEST
+    <div th:attr="id='collapse'+${status.count}" class="collapse show" data-parent="#accordion">
+      <div class="card-body" >
+      
+      	<ul class="list-group">
+		  <li class="list-group-item" th:text="${record.title}"></li>
+		  <li class="list-group-item" th:text="${record.description}"></li>
+		  <li class="list-group-item" th:text="${record.link}"></li>
+		  <li class="list-group-item" th:text="${record.image_link}"></li>
+		  <li class="list-group-item" th:text="${record.mobile_link}"></li>
+		  <li class="list-group-item" >
+		  	<ul class="list-group" th:each="inner_record : ${record.additional_image_link}">
+		  		<li class="list-group-item" th:text="${inner_record}"></li>
+		  	</ul>
+		  </li>
+		  <li class="list-group-item" th:text="${record.availability}"></li>
+		  <li class="list-group-item" th:text="${record.price}"></li>
+		  <li class="list-group-item" th:text="${record.google_product_category}"></li>
+		  <li class="list-group-item" th:text="${record.brand}"></li>
+		  <li class="list-group-item" th:text="${record.mpn}"></li>
+		  <li class="list-group-item" th:text="${record.identifier_exists}"></li>
+		  <li class="list-group-item" th:text="${record.condition}"></li>
+		  <li class="list-group-item" th:text="${record.material}"></li>
+		  <li class="list-group-item" th:text="${record.size}"></li>
+	      <li class="list-group-item" th:text="${record.age_group}"></li>
+		  <li class="list-group-item" th:text="${record.adult}"></li>
+		</ul>
+      
       </div>
     </div>
   </div>
 </div>
-
-
 
 </div>
 
