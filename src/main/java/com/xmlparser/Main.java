@@ -22,14 +22,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.util.StreamReaderDelegate;
 import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
@@ -56,8 +57,8 @@ public class Main {
 	InputStream is = null;
 	try {
 		url = new URL( XMLURL );
-		//HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-		//is = conn.getInputStream();
+		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+		is = conn.getInputStream();
 	} catch (MalformedURLException e1) {
 		url = null;
 		e1.printStackTrace();
@@ -66,24 +67,26 @@ public class Main {
 		e.printStackTrace();
 	}
 	
-//	XMLInputFactory xif = XMLInputFactory.newFactory();
-//	xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false); // this is the magic line
-//	StreamSource source = new StreamSource(is);
-//	XMLStreamReader xsr = null;
-//	try {
-//		xsr = xif.createXMLStreamReader(source);
-//	} catch (XMLStreamException e1) {
-//		// TODO Auto-generated catch block
-//		e1.printStackTrace();
-//	}
+	XMLInputFactory xif = XMLInputFactory.newFactory();
+	xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true); // this is the magic line
+	StreamSource source = new StreamSource(is);
+	XMLStreamReader xsr = null;
+	try {
+		xsr = xif.createXMLStreamReader(source);
+	} catch (XMLStreamException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
 	
 	JAXBContext context;
+	
 	Unmarshaller um;
 	Rss myxml;
 	try {
 		context = JAXBContext.newInstance(Rss.class);
 		um = context.createUnmarshaller();
-		myxml = (Rss) um.unmarshal( url );
+		XXHeaderXMLReader xxHeaderXMLReader = new XXHeaderXMLReader(xsr);
+		myxml = (Rss) um.unmarshal( xxHeaderXMLReader );
 	} catch (JAXBException e) {
 		myxml = null;  
 		e.printStackTrace();
