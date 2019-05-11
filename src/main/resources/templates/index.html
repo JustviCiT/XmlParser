@@ -24,8 +24,8 @@
   <div class="card-body"th:text="'Totali '+${global.Size}"></div>
 </div>
 
- <div th:each="record, status : ${global.item}" class="accordion" id="accordion">
-  <div class="card">
+ <div class="accordion" id="accordion">
+  <div class="card" th:each="record, status : ${global.item}">
     <div class="card-header" th:attr="id='heading'+${status.count}">
       <h2 class="mb-0">
         <button th:text="${record.id}" class="btn btn-link" type="button" data-toggle="collapse" th:attr="data-target='#collapse'+${status.count}" aria-expanded="false">

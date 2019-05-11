@@ -20,7 +20,6 @@ public class Channel {
 	
 	public void setItem(ArrayList<Item> item) {
 		this.item = item;
-		this.Size = this.item.size();
 	}
 	
 	public Integer getSize() {
