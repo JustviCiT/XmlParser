@@ -93,7 +93,8 @@ public class Main {
 	ArrayList<Item> items = ch.getItem();
 	
 	ch.setSize(items.size());
-	//System.out.println(items.size());
+	System.out.println(items.get(2).getId());
+	System.out.println(items.get(2).getgId());
 	
 	ModelAndView mav = new ModelAndView();
     mav.setViewName("index");

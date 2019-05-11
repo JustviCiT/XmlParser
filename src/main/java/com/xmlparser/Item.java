@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(namespace="g")
+@XmlRootElement(namespace="item")
 public class Item {
-	private Integer id;
+	
+	private String gId;
+	private String id;
 	private String title;
 	private String description;
 	private String link;
@@ -28,12 +30,20 @@ public class Item {
 	
 	public Item () {}
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getgId() {
+		return gId;
+	}
+
+	public void setgId(String gId) {
+		this.gId = gId;
 	}
 
 	public String getTitle() {
