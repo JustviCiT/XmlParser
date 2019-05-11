@@ -52,12 +52,12 @@ public class Main {
 
   @RequestMapping("/")
   public ModelAndView mainindex() {
-	URL url;
+	URL url=null;
 	InputStream is = null;
 	try {
 		url = new URL( XMLURL );
-		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-		is = conn.getInputStream();
+		//HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+		//is = conn.getInputStream();
 	} catch (MalformedURLException e1) {
 		url = null;
 		e1.printStackTrace();
@@ -83,7 +83,7 @@ public class Main {
 	try {
 		context = JAXBContext.newInstance(Rss.class);
 		um = context.createUnmarshaller();
-		myxml = (Rss) um.unmarshal( is );
+		myxml = (Rss) um.unmarshal( url );
 	} catch (JAXBException e) {
 		myxml = null;  
 		e.printStackTrace();
