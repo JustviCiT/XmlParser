@@ -2,13 +2,6 @@ package com.xmlparser;
 
 import java.util.ArrayList;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-//@XmlRootElement(name="item")
-//@XmlAccessorType(XmlAccessType.FIELD)
 public class Item {
 
 	private String id;
@@ -29,7 +22,6 @@ public class Item {
 	private String size;
 	private String age_group;
 	private String adult;
-//		<g:custom_label_0>Birth year 1949</g:custom_label_0>
 	
 	public Item () {}
 
@@ -40,13 +32,6 @@ public class Item {
 	public void setId(String id) {
 		this.id = id;
 	}
-//	public String getgId() {
-//		return gId;
-//	}
-//
-//	public void setgId(String gId) {
-//		this.gId = gId;
-//	}
 
 	public String getTitle() {
 		return title;

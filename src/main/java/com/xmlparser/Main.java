@@ -30,7 +30,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.util.StreamReaderDelegate;
 import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
@@ -67,8 +66,9 @@ public class Main {
 		e.printStackTrace();
 	}
 	
+	// Fix linux servers JAXB
 	XMLInputFactory xif = XMLInputFactory.newFactory();
-	xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true); // this is the magic line
+	xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true); 
 	StreamSource source = new StreamSource(is);
 	XMLStreamReader xsr = null;
 	try {
@@ -77,6 +77,7 @@ public class Main {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	}
+	/**/
 	
 	JAXBContext context;
 	
@@ -95,12 +96,11 @@ public class Main {
 	ArrayList<Item> items = ch.getItem();
 	
 	ch.setSize(items.size());
-	System.out.println(items.get(2).getId());
+	//System.out.println(items.get(2).getId());
 	
 	ModelAndView mav = new ModelAndView();
     mav.setViewName("index");
     mav.addObject("global", ch);
-    //mav.addObject("records", items);
      
     return mav;
   }
