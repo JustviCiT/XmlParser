@@ -87,7 +87,7 @@ public class Main {
 
 	InputSource inputsource = new InputSource(is);
 	final SAXParserFactory sax = SAXParserFactory.newInstance();
-	sax.setNamespaceAware(true);
+	sax.setNamespaceAware(false);
 	final XMLReader reader;
 	try {
 	    reader = sax.newSAXParser().getXMLReader();
