@@ -16,52 +16,33 @@
 
 package com.xmlparser;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
 import javax.net.ssl.HttpsURLConnection;
-import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map;
+
 
 @Controller
 @SpringBootApplication
 public class Main {
-
-  @Value("${spring.datasource.url}")
-  private String dbUrl;
-
-  @Autowired
-  private DataSource dataSource;
   
   private static final String XMLURL = "https://www.watchclub.com/merchant/feed.xml";
 
@@ -84,18 +65,17 @@ public class Main {
 		is = null;
 		e.printStackTrace();
 	}
-
-	InputSource inputsource = new InputSource(is);
-	final SAXParserFactory sax = SAXParserFactory.newInstance();
-	sax.setNamespaceAware(false);
-	final XMLReader reader;
-	try {
-	    reader = sax.newSAXParser().getXMLReader();
-	} catch (SAXException | ParserConfigurationException e) {
-	    throw new RuntimeException(e);
-	}
-	SAXSource source = new SAXSource(reader, inputsource);
 	
+//	XMLInputFactory xif = XMLInputFactory.newFactory();
+//	xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false); // this is the magic line
+//	StreamSource source = new StreamSource(is);
+//	XMLStreamReader xsr = null;
+//	try {
+//		xsr = xif.createXMLStreamReader(source);
+//	} catch (XMLStreamException e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	}
 	
 	JAXBContext context;
 	Unmarshaller um;
@@ -103,7 +83,7 @@ public class Main {
 	try {
 		context = JAXBContext.newInstance(Rss.class);
 		um = context.createUnmarshaller();
-		myxml = (Rss) um.unmarshal( source );
+		myxml = (Rss) um.unmarshal( is );
 	} catch (JAXBException e) {
 		myxml = null;  
 		e.printStackTrace();
@@ -112,7 +92,6 @@ public class Main {
 	ArrayList<Item> items = ch.getItem();
 	
 	ch.setSize(items.size());
-	//System.out.println(items.get(2).getId());
 	System.out.println(items.get(2).getId());
 	
 	ModelAndView mav = new ModelAndView();
@@ -121,16 +100,5 @@ public class Main {
     //mav.addObject("records", items);
      
     return mav;
-  }
-
-  @Bean
-  public DataSource dataSource() throws SQLException {
-    if (dbUrl == null || dbUrl.isEmpty()) {
-      return new HikariDataSource();
-    } else {
-      HikariConfig config = new HikariConfig();
-      config.setJdbcUrl(dbUrl);
-      return new HikariDataSource(config);
-    }
   }
 }

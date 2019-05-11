@@ -7,9 +7,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="item")
+//@XmlRootElement(name="item")
+//@XmlAccessorType(XmlAccessType.FIELD)
 public class Item {
-	
+
 	private String id;
 	private String title;
 	private String description;
@@ -39,12 +40,12 @@ public class Item {
 	public void setId(String id) {
 		this.id = id;
 	}
-//	public String getgid() {
-//		return gid;
+//	public String getgId() {
+//		return gId;
 //	}
 //
-//	public void setgId(String gid) {
-//		this.gid = gid;
+//	public void setgId(String gId) {
+//		this.gId = gId;
 //	}
 
 	public String getTitle() {
