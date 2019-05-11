@@ -2,12 +2,14 @@ package com.xmlparser;
 
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(namespace="item")
+@XmlRootElement(name="item")
 public class Item {
 	
-	private String gId;
 	private String id;
 	private String title;
 	private String description;
@@ -37,14 +39,13 @@ public class Item {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	public String getgId() {
-		return gId;
-	}
-
-	public void setgId(String gId) {
-		this.gId = gId;
-	}
+//	public String getgid() {
+//		return gid;
+//	}
+//
+//	public void setgId(String gid) {
+//		this.gid = gid;
+//	}
 
 	public String getTitle() {
 		return title;

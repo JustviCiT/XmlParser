@@ -28,12 +28,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,14 +84,26 @@ public class Main {
 		is = null;
 		e.printStackTrace();
 	}
-	  
+
+	InputSource inputsource = new InputSource(is);
+	final SAXParserFactory sax = SAXParserFactory.newInstance();
+	sax.setNamespaceAware(true);
+	final XMLReader reader;
+	try {
+	    reader = sax.newSAXParser().getXMLReader();
+	} catch (SAXException | ParserConfigurationException e) {
+	    throw new RuntimeException(e);
+	}
+	SAXSource source = new SAXSource(reader, inputsource);
+	
+	
 	JAXBContext context;
 	Unmarshaller um;
 	Rss myxml;
 	try {
 		context = JAXBContext.newInstance(Rss.class);
 		um = context.createUnmarshaller();
-		myxml = (Rss) um.unmarshal( is );
+		myxml = (Rss) um.unmarshal( source );
 	} catch (JAXBException e) {
 		myxml = null;  
 		e.printStackTrace();
@@ -93,8 +112,8 @@ public class Main {
 	ArrayList<Item> items = ch.getItem();
 	
 	ch.setSize(items.size());
+	//System.out.println(items.get(2).getId());
 	System.out.println(items.get(2).getId());
-	System.out.println(items.get(2).getgId());
 	
 	ModelAndView mav = new ModelAndView();
     mav.setViewName("index");
